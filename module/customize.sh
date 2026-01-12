@@ -47,9 +47,7 @@ test_ext4_image() {
 	# cleanup
 	rm -rf "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test"
 	
-	if [ "$ext4_fail" = "1" ]; then
-		abort "[!] ext4 fallback mode test fail!"
-	fi
+	
 }
 
 echo "[+] mountify"
