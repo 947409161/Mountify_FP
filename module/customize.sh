@@ -36,18 +36,29 @@ fi
 test_ext4_image() {
 	mkdir -p "$MNT_FOLDER/mountify-mount-test"
 	busybox dd if=/dev/zero of="$MNT_FOLDER/mountify-ext4-test" bs=1M count=0 seek=8 >/dev/null 2>&1 || ext4_fail=1
-	/system/bin/mkfs.ext4 -O ^has_journal "$MNT_FOLDER/mountify-ext4-test" >/dev/null 2>&1 || ext4_fail=1
+	/system/bin/mkfs.ext4 -O ^has_journal "$MNT_FOLDER/mountify-ext4-test" >/dev/null 2>&1 || ext4_fail=2
 	
 	# https://github.com/tiann/KernelSU/pull/3019
-	[ "$KSU" = "true" ] && busybox chcon "u:object_r:ksu_file:s0" "$MNT_FOLDER/mountify-ext4-test"
+	if [ "$KSU" = "true" ]; then
+		busybox chcon "u:object_r:ksu_file:s0" "$MNT_FOLDER/mountify-ext4-test"
+	fi
 
-	busybox mount -o loop,rw "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test" >/dev/null 2>&1 || ext4_fail=1
+	busybox mount -o loop,rw "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test" >/dev/null 2>&1 || ext4_fail=3
 	busybox umount -l "$MNT_FOLDER/mountify-mount-test" > /dev/null 2>&1 # doesnt matter
 
 	# cleanup
 	rm -rf "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test"
 	
 	if [ "$ext4_fail" = "1" ]; then
+	    abort "busybox dd if=/dev/zero of="$MNT_FOLDER/mountify-ext4-test" bs=1M count=0 seek=8"
+		abort "[!] ext4 fallback mode test fail!"
+	fi
+	if [ "$ext4_fail" = "2" ]; then
+	    abort "/system/bin/mkfs.ext4 -O ^has_journal "$MNT_FOLDER/mountify-ext4-test""
+		abort "[!] ext4 fallback mode test fail!"
+	fi
+	if [ "$ext4_fail" = "3" ]; then
+	    abort "busybox mount -o loop,rw "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test""
 		abort "[!] ext4 fallback mode test fail!"
 	fi
 }
