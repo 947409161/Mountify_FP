@@ -1,8 +1,8 @@
 id=mountify
-name=mountify
+name=mountify_FP
 version=v1.9.2
 versionCode=192
-author=xx, KOWX712
+author=xx, KOWX712, FolkPatch Dev Team
 metamodule=true
 description=Globally mounted modules via OverlayFS.
 updateJson=https://raw.githubusercontent.com/backslashxx/mountify/master/update.json
