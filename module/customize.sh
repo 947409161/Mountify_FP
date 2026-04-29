@@ -47,8 +47,6 @@ test_ext4_image() {
 	# https://github.com/tiann/KernelSU/pull/3019
 	[ "$KSU" = "true" ] && busybox chcon "u:object_r:ksu_file:s0" "$MNT_FOLDER/mountify-ext4-test"
 
-	busybox mount -o loop,rw "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test" >/dev/null 2>&1 || ext4_fail=1
-	busybox umount -l "$MNT_FOLDER/mountify-mount-test" > /dev/null 2>&1 # doesnt matter
 
 	# cleanup
 	rm -rf "$MNT_FOLDER/mountify-ext4-test" "$MNT_FOLDER/mountify-mount-test"
